@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
+export default function Signup() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ identifier: '', password: '' });
-  const { loading, error, success, login } = useAuth();
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const { loading, error, success, signup } = useAuth();
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -13,20 +18,37 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(formData.identifier, formData.password);
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+    await signup({
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+    });
     if (!error) navigate('/');
   };
 
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <h2 style={styles.title}>Login</h2>
+        <h2 style={styles.title}>Sign Up</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
           <input
             type="text"
-            name="identifier"
-            placeholder="Email or Username"
-            value={formData.identifier}
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
             onChange={handleChange}
             style={styles.input}
             required
@@ -40,16 +62,25 @@ export default function Login() {
             style={styles.input}
             required
           />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Signing up...' : 'Sign Up'}
           </button>
         </form>
         {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
         {success && <p style={{ color: 'green', marginTop: 10 }}>{success}</p>}
         <p style={styles.toggle}>
-          Don't have an account?{' '}
-          <span onClick={() => navigate('/signup')} style={styles.link}>
-            Sign Up
+          Already have an account?{' '}
+          <span onClick={() => navigate('/login')} style={styles.link}>
+            Login
           </span>
         </p>
       </div>
@@ -116,5 +147,4 @@ const styles = {
     marginLeft: '5px',
   },
 };
-
 
