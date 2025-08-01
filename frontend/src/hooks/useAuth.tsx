@@ -20,6 +20,7 @@ export default function useAuth() {
 
       if (!res.ok) throw new Error(data.message || 'Login failed');
       setSuccess(data.message);
+      localStorage.setItem("isLoggedIn", "true");
     } catch (err) {
       setError(err.message);
     } finally {

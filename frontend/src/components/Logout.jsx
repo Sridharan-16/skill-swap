@@ -1,18 +1,19 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
 
 export default function LogoutButton() {
-  const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  useEffect(() => {
+    // Clear login flag
+    localStorage.setItem("isLoggedIn", "false");
 
-  return (
-    <button onClick={handleLogout} style={{ marginLeft: '10px' }}>
-      Logout
-    </button>
-  );
+    // Optional: clear token or user data
+    // localStorage.removeItem("token");
+
+    // Redirect to login or home
+    navigate('/');
+  }, []);
+
+  return null; // No UI needed
 }

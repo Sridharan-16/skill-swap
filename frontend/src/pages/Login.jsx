@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // ✅ fixed
 import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const navigate = useNavigate();
+
+  // ✅ Redirect if already logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn === "true") {
+      navigate("/");
+    }
+  }, []);
+
   const [formData, setFormData] = useState({ identifier: '', password: '' });
   const { loading, error, success, login } = useAuth();
 
@@ -14,9 +23,11 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(formData.identifier, formData.password);
-    if (!error) navigate('/');
+    if (!error) {
+      localStorage.setItem("isLoggedIn", "true"); // ✅ persist login
+      navigate('/');
+    }
   };
-
   return (
     <div style={styles.page}>
       <div style={styles.card}>

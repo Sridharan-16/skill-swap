@@ -3,5 +3,15 @@
     "username": "sri",
     "email": "sridharanism1@gmail.com",
     "password": "123"
+  },
+  {
+    "username": "mathi",
+    "email": "mathi@gmail.com",
+    "password": "123"
+  },
+  {
+    "username": "sri1",
+    "email": "sro@gmail.com",
+    "password": "123"
   }
 ]

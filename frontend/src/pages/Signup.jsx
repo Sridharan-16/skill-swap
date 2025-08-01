@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import useAuth from '../hooks/useAuth';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -10,7 +10,16 @@ export default function Signup() {
     password: '',
     confirmPassword: '',
   });
+
   const { loading, error, success, signup } = useAuth();
+
+  // ✅ Redirect if already logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn === "true") {
+      navigate("/home");
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -18,16 +27,23 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
+
     await signup({
       username: formData.username,
       email: formData.email,
       password: formData.password,
     });
-    if (!error) navigate('/');
+
+    // ✅ Set login state and redirect
+    if (!error) {
+      localStorage.setItem("isLoggedIn", "true");
+      navigate('/home');
+    }
   };
 
   return (
@@ -147,4 +163,3 @@ const styles = {
     marginLeft: '5px',
   },
 };
-
